@@ -132,6 +132,6 @@ def getCountRecordsInTables():
     connection.close()
 
 if __name__ == '__main__':
-    #create_tables()
+    create_tables()
     import_data()
-    #getCountRecordsInTables()
+    getCountRecordsInTables()
