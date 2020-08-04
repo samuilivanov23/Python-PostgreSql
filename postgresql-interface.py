@@ -7,8 +7,8 @@ cur = connection.cursor()
 
 selishte = input("Enter name of selishte: ")
 
-count_sql_query = "select * from public." + '"selishta"' + " where name='" + selishte + "'"
-cur.execute(count_sql_query)
+count_sql_query = "select * from public." + '"selishta"' + " where name=%s"
+cur.execute(count_sql_query, (selishte,))
 records = cur.fetchall() 
    
 #print(" id    name    type    obstina_id")
