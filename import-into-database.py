@@ -6,27 +6,27 @@ def create_tables():
     
     command = ('''
 
-    CREATE TABLE "Oblasti" (
+    CREATE TABLE "oblasti" (
         "id" varchar PRIMARY KEY,
         "name" varchar
     );
 
-    CREATE TABLE "Obstini" (
+    CREATE TABLE "obstini" (
         "id" varchar PRIMARY KEY,
         "name" varchar,
         "oblast_id" varchar
     );
 
-    CREATE TABLE "Selishta" (
+    CREATE TABLE "selishta" (
         "id" varchar PRIMARY KEY,
         "name" varchar,
         "type" varchar,
         "obstina_id" varchar
     );
 
-    ALTER TABLE "Obstini" ADD FOREIGN KEY (oblast_id) REFERENCES "Oblasti" (id);
+    ALTER TABLE "obstini" ADD FOREIGN KEY (oblast_id) REFERENCES "oblasti" (id);
 
-    ALTER TABLE "Selishta" ADD FOREIGN KEY (obstina_id) REFERENCES "Obstini" (id);
+    ALTER TABLE "selishta" ADD FOREIGN KEY (obstina_id) REFERENCES "obstini" (id);
     
     ''')
 
@@ -64,7 +64,7 @@ def import_data():
             next(reader)
             for row in reader:
                 cur.execute(
-                    'insert into public."Oblasti" (id, name) values (%s, %s)',
+                    'insert into public."oblasti" (id, name) values (%s, %s)',
                     row
                 )
         
@@ -76,7 +76,7 @@ def import_data():
             next(reader)
             for row in reader:
                 cur.execute(
-                    'insert into public."Obstini" (id, name, oblast_id) values (%s, %s, %s)',
+                    'insert into public."obstini" (id, name, oblast_id) values (%s, %s, %s)',
                     row
                 )
         
@@ -88,7 +88,7 @@ def import_data():
             next(reader)
             for row in reader:
                 cur.execute(
-                    'insert into public."Selishta" (id, name, type, obstina_id) values (%s, %s, %s, %s)',
+                    'insert into public."selishta" (id, name, type, obstina_id) values (%s, %s, %s, %s)',
                     row
                 )
         
