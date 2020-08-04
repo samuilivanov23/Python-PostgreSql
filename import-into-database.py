@@ -6,18 +6,18 @@ def create_tables():
     
     command = ('''
 
-    CREATE TABLE "oblasti" (
+    CREATE TABLE IF NOT EXISTS "oblasti" (
         "id" varchar PRIMARY KEY,
         "name" varchar
     );
 
-    CREATE TABLE "obstini" (
+    CREATE TABLE IF NOT EXISTS "obstini" (
         "id" varchar PRIMARY KEY,
         "name" varchar,
         "oblast_id" varchar
     );
 
-    CREATE TABLE "selishta" (
+    CREATE TABLE IF NOT EXISTS "selishta" (
         "id" varchar PRIMARY KEY,
         "name" varchar,
         "type" varchar,
@@ -30,18 +30,16 @@ def create_tables():
     
     ''')
 
+    #connect to the database
+    connection = psycopg2.connect("dbname='selishta_postgres' user='samuil2001ivanov' password='samuil123'")
+    connection.autocommit = True
+    cur = connection.cursor()
+
     connection = None
     try:
-        # connect to the PostgreSQL server
-        connection = psycopg2.connect("dbname = 'selishta_postgres' user='samuil2001ivanov' password='samuil123'")
-        cur = connection.cursor()
-        
+        #create the tables in the database
         cur.execute(command)
-        # close communication with the PostgreSQL database server
-        
         cur.close()
-        # commit the changes
-        connection.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
@@ -50,23 +48,26 @@ def create_tables():
 
 def import_data():
     try:
-        file_path_oblasti = "/home/samuil2001ivanov/Downloads/Oblasti.csv"
-        file_path_obstini = "/home/samuil2001ivanov/Downloads/Obstini.csv"
-        file_path_selishta = "/home/samuil2001ivanov/Downloads/Selishta.csv"
-
+        #connect to the database
         connection = psycopg2.connect("dbname='selishta_postgres' user='samuil2001ivanov' password='samuil123'")
         connection.autocommit = True
         cur = connection.cursor()
+
+        file_path_oblasti = "/home/samuil2001ivanov/Downloads/Oblasti.csv"
+        file_path_obstini = "/home/samuil2001ivanov/Downloads/Obstini.csv"
+        file_path_selishta = "/home/samuil2001ivanov/Downloads/Selishta.csv"
 
         #load data into 'Oblasti' table
         with open(file_path_oblasti, 'r') as f:
             reader = csv.reader(f)
             next(reader)
-            for row in reader:
-                cur.execute(
-                    'insert into public."oblasti" (id, name) values (%s, %s)',
-                    row
-                )
+            row_count = sum(1 for row in reader)
+            if row_count <= 1:
+                for row in reader:
+                    cur.execute(
+                        'insert into public."oblasti" (id, name) values (%s, %s)',
+                        row
+                    )
         
         connection.commit()
 
@@ -74,11 +75,13 @@ def import_data():
         with open(file_path_obstini, 'r') as f:
             reader = csv.reader(f)
             next(reader)
-            for row in reader:
-                cur.execute(
-                    'insert into public."obstini" (id, name, oblast_id) values (%s, %s, %s)',
-                    row
-                )
+            row_count = sum(1 for row in reader)
+            if row_count <= 1:
+                for row in reader:
+                    cur.execute(
+                        'insert into public."obstini" (id, name, oblast_id) values (%s, %s, %s)',
+                        row
+                    )
         
         connection.commit()
 
@@ -86,20 +89,49 @@ def import_data():
         with open(file_path_selishta, 'r') as f:
             reader = csv.reader(f)
             next(reader)
-            for row in reader:
-                cur.execute(
-                    'insert into public."selishta" (id, name, type, obstina_id) values (%s, %s, %s, %s)',
-                    row
-                )
-        
+            row_count = sum(1 for row in reader)
+            if row_count <= 1:
+                for row in reader:
+                    cur.execute(
+                        'insert into public."selishta" (id, name, type, obstina_id) values (%s, %s, %s, %s)',
+                        row
+                    )
+
         connection.commit()
     except psycopg2.Error as e:
         print(e)
+    
+    cur.close()
+    connection.close()
+
+def getCountRecordsInTables():
+     #connect to the database
+    connection = psycopg2.connect("dbname='selishta_postgres' user='samuil2001ivanov' password='samuil123'")
+    connection.autocommit = True
+    cur = connection.cursor()
+
+    #get the number of records in the 'oblasti' table
+    count_sql_query = 'select count(*) from public."oblasti"'
+    cur.execute(count_sql_query)
+    records_count = cur.fetchone()[0]
+    print('count of records in table "oblasti": ' + str(records_count))
+
+    #get the number of records in the 'obstini' table
+    count_sql_query = 'select count(*) from public."obstini"'
+    cur.execute(count_sql_query)
+    records_count = cur.fetchone()[0]
+    print('count of records in table "obstini": ' + str(records_count))
+
+    #get the number of records in the 'selishta' table
+    count_sql_query = 'select count(*) from public."selishta"'
+    cur.execute(count_sql_query)
+    records_count = cur.fetchone()[0]
+    print('count of records in table "selishta": ' + str(records_count))
 
     cur.close()
     connection.close()
 
-
 if __name__ == '__main__':
-    create_tables()
+    #create_tables()
     import_data()
+    #getCountRecordsInTables()
