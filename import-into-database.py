@@ -1,5 +1,6 @@
 import psycopg2
 import csv
+from dbconfig import dbname_, dbuser_, dbpassword_
 
 def create_tables():
     "create tables in the PostgreSQL database"
@@ -31,7 +32,7 @@ def create_tables():
     ''')
 
     #connect to the database
-    connection = psycopg2.connect("dbname='selishta_postgres' user='samuil2001ivanov' password='samuil123'")
+    connection = psycopg2.connect("dbname='" + dbname_ + "' user='" + dbuser_ + "' password='" + dbpassword_ + "'")
     connection.autocommit = True
     cur = connection.cursor()
 
