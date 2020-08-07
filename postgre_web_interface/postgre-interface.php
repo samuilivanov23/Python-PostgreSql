@@ -125,8 +125,6 @@
 
             <div class="autocomplete" style="width:300px">
                 <label for="city">Тип на селището (гр./с.)</label><br>
-                <input type="text" id="type" name="type"
-                            value="<?php if (isset($_POST["type"])) echo $_POST["type"]; ?>"><br><br>
                     <select id="type" name="type">
                         <option value="">-</option>
                         <option value="гр.">Град</option>
