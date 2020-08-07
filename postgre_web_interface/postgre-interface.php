@@ -98,10 +98,15 @@
             </div>
 
             <div class="autocomplete" style="width:300px">
-                <label for="city">Типаж на селището (гр./с.)</label><br>
+                <label for="city">Тип на селището (гр./с.)</label><br>
                 <input type="text" id="type" name="type"
                             value="<?php if (isset($_POST["type"])) echo $_POST["type"]; ?>"><br><br>
-            </div>
+                    <select id="type" name="type">
+                        <option value="">-</option>
+                        <option value="гр.">Град</option>
+                        <option value="с.">Село</option>
+                    </select>
+            </div><br>
 
             <div class="autocomplete" style="width:300px">
                 <label for="city">Име на община</label><br>
@@ -117,6 +122,18 @@
 
             <input class="button button_style" type="submit" value="Submit" name="Submit"> <br><br>
         </form>
+
+        <p>
+            Count of records in table "oblasti": 28
+        </p>
+
+        <p>
+            Count of records in table "obstini": 265
+        </p>
+
+        <p>
+            Count of records in table "obstini": 5257
+        </p>
 
         <table id="customers">
             <thead>
