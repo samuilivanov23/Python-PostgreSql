@@ -88,6 +88,32 @@
                     echo "<p>The input data is not matching any records</p><br>";
                 }
             }
+
+            $connection_string = "host=" . $dbhost_ . " port=5432 dbname=" . $dbname_ . " user=" . $dbuser_ . " password=" . $dbpass_;
+            $dbConnection = pg_connect($connection_string);
+
+            $sql = 'select count(*) from public."oblasti"';
+            $query = pg_query($sql);
+
+            if($row = pg_fetch_array($query)){
+                $count_oblasti = $row["count"];
+            }
+
+            $sql = 'select count(*) from public."obstini"';
+            $query = pg_query($sql);
+
+            if($row = pg_fetch_array($query)){
+                $count_obstini = $row["count"];
+            }
+
+            $sql = 'select count(*) from public."selishta"';
+            $query = pg_query($sql);
+
+            if($row = pg_fetch_array($query)){
+                $count_selishta = $row["count"];
+            }
+
+            pg_close($dbConnection);
         ?>
 
         <form name="Form" class="margin_style" action="" method="post" accept-charset="UTF-8">
@@ -124,15 +150,15 @@
         </form>
 
         <p>
-            Count of records in table "oblasti": 28
+            Count of records in table "oblasti": <?php echo htmlspecialchars($count_oblasti) ?>
         </p>
 
         <p>
-            Count of records in table "obstini": 265
+            Count of records in table "obstini": <?php echo htmlspecialchars($count_obstini) ?>
         </p>
 
         <p>
-            Count of records in table "obstini": 5257
+            Count of records in table "obstini": <?php echo htmlspecialchars($count_selishta) ?>
         </p>
 
         <table id="customers">
