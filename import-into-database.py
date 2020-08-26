@@ -2,7 +2,7 @@ import psycopg2
 import csv
 from dbconfig import dbname_, dbuser_, dbpassword_
 
-def create_tables():
+def createTables():
     "create tables in the PostgreSQL database"
     
     command = ('''
@@ -31,11 +31,6 @@ def create_tables():
     
     ''')
 
-    #connect to the database
-    connection = psycopg2.connect("dbname='" + dbname_ + "' user='" + dbuser_ + "' password='" + dbpassword_ + "'")
-    connection.autocommit = True
-    cur = connection.cursor()
-
     connection = None
     try:
         #create the tables in the database
@@ -47,58 +42,20 @@ def create_tables():
         if connection is not None:
             connection.close()
 
-def import_data():
+def importData():
     try:
-        #connect to the database
-        connection = psycopg2.connect("dbname='selishta_postgres' user='samuil2001ivanov' password='samuil123'")
-        connection.autocommit = True
-        cur = connection.cursor()
-
         file_path_oblasti = "/home/samuil2001ivanov/Downloads/Oblasti.csv"
         file_path_obstini = "/home/samuil2001ivanov/Downloads/Obstini.csv"
         file_path_selishta = "/home/samuil2001ivanov/Downloads/Selishta.csv"
 
         #load data into 'Oblasti' table
-        with open(file_path_oblasti, 'r') as f:
-            reader = csv.reader(f)
-            next(reader)
-            row_count = sum(1 for row in reader)
-            if row_count <= 1:
-                for row in reader:
-                    cur.execute(
-                        'insert into public."oblasti" (id, name) values (%s, %s)',
-                        row
-                    )
-        
-        connection.commit()
+        loadFileIntoDb(file_path_oblasti, "oblasti")
 
         #load data into 'Obstini' table
-        with open(file_path_obstini, 'r') as f:
-            reader = csv.reader(f)
-            next(reader)
-            row_count = sum(1 for row in reader)
-            if row_count <= 1:
-                for row in reader:
-                    cur.execute(
-                        'insert into public."obstini" (id, name, oblast_id) values (%s, %s, %s)',
-                        row
-                    )
-        
-        connection.commit()
+        loadFileIntoDb(file_path_obstini, "obstini")
 
         #load data into 'Selishta' table
-        with open(file_path_selishta, 'r') as f:
-            reader = csv.reader(f)
-            next(reader)
-            row_count = sum(1 for row in reader)
-            if row_count <= 1:
-                for row in reader:
-                    cur.execute(
-                        'insert into public."selishta" (id, name, type, obstina_id) values (%s, %s, %s, %s)',
-                        row
-                    )
-
-        connection.commit()
+        loadFileIntoDb(file_path_selishta, "selishta")
     except psycopg2.Error as e:
         print(e)
     
@@ -106,33 +63,46 @@ def import_data():
     connection.close()
 
 def getCountRecordsInTables():
-     #connect to the database
-    connection = psycopg2.connect("dbname='selishta_postgres' user='samuil2001ivanov' password='samuil123'")
-    connection.autocommit = True
-    cur = connection.cursor()
-
     #get the number of records in the 'oblasti' table
     count_sql_query = 'select count(*) from public."oblasti"'
-    cur.execute(count_sql_query)
-    records_count = cur.fetchone()[0]
-    print('count of records in table "oblasti": ' + str(records_count))
+    getRecordsCount(count_sql_query, "oblasti")
 
     #get the number of records in the 'obstini' table
     count_sql_query = 'select count(*) from public."obstini"'
-    cur.execute(count_sql_query)
-    records_count = cur.fetchone()[0]
-    print('count of records in table "obstini": ' + str(records_count))
+    getRecordsCount(count_sql_query, "obstini")
 
     #get the number of records in the 'selishta' table
     count_sql_query = 'select count(*) from public."selishta"'
-    cur.execute(count_sql_query)
-    records_count = cur.fetchone()[0]
-    print('count of records in table "selishta": ' + str(records_count))
+    getRecordsCount(count_sql_query, "selishta")
 
     cur.close()
     connection.close()
 
+def getRecordsCount(sql_query, table_name):
+    cur.execute(sql_query)
+    records_count = cur.fetchone()[0]
+    print('count of records in table "' + table_name + '": ' + str(records_count))
+
+def loadFileIntoDb(file_path, table_name):
+    with open(file_path, 'r') as f:
+        reader = csv.reader(f)
+        next(reader)
+        row_count = sum(1 for row in reader)
+        if row_count <= 1:
+            for row in reader:
+                cur.execute(
+                    'insert into public."' + table_name + '" (id, name) values (%s, %s)',
+                    row
+                )
+        
+        connection.commit()    
+
 if __name__ == '__main__':
-    create_tables()
-    import_data()
+    #connect to the database
+    connection = psycopg2.connect("dbname='" + dbname_ + "' user='" + dbuser_ + "' password='" + dbpassword_ + "'")
+    connection.autocommit = True
+    cur = connection.cursor()
+
+    createTables()
+    importData()
     getCountRecordsInTables()

@@ -147,28 +147,22 @@
             <input class="button button_style" type="submit" value="Submit" name="Submit"> <br><br>
         </form>
 
-        <p>
-            Count of records in table "oblasti": <?php echo htmlspecialchars($count_oblasti) ?>
-        </p>
+        <p> Брой записи в таблицата с области: <?php echo htmlspecialchars($count_oblasti) ?></p>
 
-        <p>
-            Count of records in table "obstini": <?php echo htmlspecialchars($count_obstini) ?>
-        </p>
+        <p> Брой записи в таблицата с общини: <?php echo htmlspecialchars($count_obstini) ?></p>
 
-        <p>
-            Count of records in table "obstini": <?php echo htmlspecialchars($count_selishta) ?>
-        </p>
+        <p> Брой записи в таблицата със селища: <?php echo htmlspecialchars($count_selishta) ?></p>
 
         <table id="customers">
             <thead>
                 <tr>
-                    <th>id</th>
-                    <th>selishte_name</th>
-                    <th>selisthe_type</th>
-                    <th>obstina_id</th>
-                    <th>obstina_name</th>
-                    <th>oblast_id</th>
-                    <th>oblast_name</th>
+                    <th>id на селището</th>
+                    <th>Име на селището</th>
+                    <th>Тип на селището</th>
+                    <th>id на общината</th>
+                    <th>Име на общината</th>
+                    <th>id на областта</th>
+                    <th>Име на областта</th>
                 </tr>
             </thead>
             <tbody>
